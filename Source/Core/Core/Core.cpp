@@ -93,6 +93,7 @@
 #ifdef ANDROID
 #include "jni/AndroidCommon/IDCache.h"
 #endif
+#include "AchievementManager.h"
 
 namespace Core
 {
@@ -156,6 +157,9 @@ void FrameUpdateOnCPUThread()
 
 void OnFrameEnd()
 {
+  // TODO lillyjade: This still feels a bit hacky but it may genuinely
+  // be the best place to put this???
+  Achievements::DoFrame();
 #ifdef USE_MEMORYWATCHER
   if (s_memory_watcher)
     s_memory_watcher->Step();

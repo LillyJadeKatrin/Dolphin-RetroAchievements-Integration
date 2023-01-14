@@ -600,6 +600,7 @@ PUBLIC
   ${MBEDTLS_LIBRARIES}
   pugixml
   RangeSet::RangeSet
+	rcheevos
   sfml-network
   sfml-system
   videonull

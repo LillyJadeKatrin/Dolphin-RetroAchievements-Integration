@@ -90,6 +90,7 @@ signals:
   void ShowCheatsManager();
   void ShowResourcePackManager();
   void ConnectWiiRemote(int id);
+  void ShowAchievementsWindow();
 
   // Options
   void Configure();

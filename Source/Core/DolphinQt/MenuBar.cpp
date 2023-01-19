@@ -22,6 +22,7 @@
 #include "Common/CDUtils.h"
 #include "Core/Boot/Boot.h"
 #include "Core/CommonTitles.h"
+#include "Core/Config/AchievementSettings.h"
 #include "Core/Config/MainSettings.h"
 #include "Core/ConfigManager.h"
 #include "Core/Core.h"
@@ -93,6 +94,7 @@ MenuBar::MenuBar(QWidget* parent) : QMenuBar(parent)
 
   OnEmulationStateChanged(Core::GetState());
   connect(&Settings::Instance(), &Settings::DebugModeToggled, this, &MenuBar::OnDebugModeToggled);
+  connect(&Settings::Instance(), &Settings::HardcoreModeToggled, this, &MenuBar::OnHardcoreModeToggled);
 
   connect(this, &MenuBar::SelectionChanged, this, &MenuBar::OnSelectionChanged);
   connect(this, &MenuBar::RecordingStatusChanged, this, &MenuBar::OnRecordingStatusChanged);
@@ -117,10 +119,18 @@ void MenuBar::OnEmulationStateChanged(Core::State state)
   m_stop_action->setVisible(running);
   m_reset_action->setEnabled(running);
   m_fullscreen_action->setEnabled(running);
-  m_frame_advance_action->setEnabled(running);
   m_screenshot_action->setEnabled(running);
-  m_state_load_menu->setEnabled(running);
   m_state_save_menu->setEnabled(running);
+
+  if (Settings::Instance().IsHardcoreModeEnabled())
+  {
+    m_frame_advance_action->setEnabled(false);
+    m_state_load_menu->setEnabled(false);
+  }
+  {
+    m_frame_advance_action->setEnabled(running);
+    m_state_load_menu->setEnabled(running);
+  }
 
   // Movie
   m_recording_read_only->setEnabled(running);
@@ -187,6 +197,14 @@ void MenuBar::OnDebugModeToggled(bool enabled)
     removeAction(m_jit->menuAction());
     removeAction(m_symbols->menuAction());
   }
+}
+
+void MenuBar::OnHardcoreModeToggled(bool enabled)
+{
+  // TODO lillyjade : I don't know how to check for whether or not a game is running
+  // from right here just yet.
+  m_frame_advance_action->setEnabled(!enabled);
+  m_state_load_menu->setEnabled(!enabled);
 }
 
 void MenuBar::AddDVDBackupMenu(QMenu* file_menu)

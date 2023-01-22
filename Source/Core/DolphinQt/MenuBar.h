@@ -91,6 +91,7 @@ signals:
   void ShowResourcePackManager();
   void ConnectWiiRemote(int id);
   void ShowAchievementsWindow();
+  void ActivateRAMenuItem(int id);
 
   // Options
   void Configure();

@@ -222,6 +222,11 @@ MainWindow::MainWindow(std::unique_ptr<BootParameters> boot_parameters,
 
   InitControllers();
 
+  // Apparently this has to be done before CreateComponents() so it's initialized.
+  Achievements::Init();
+  Achievements::Login();
+  Achievements::RAIntegration::MainWindowChanged((HANDLE)winId());
+
   CreateComponents();
 
   ConnectGameList();
@@ -238,9 +243,6 @@ MainWindow::MainWindow(std::unique_ptr<BootParameters> boot_parameters,
   InitCoreCallbacks();
 
   NetPlayInit();
-
-  Achievements::Init();
-  Achievements::Login();
 
 #if defined(__unix__) || defined(__unix) || defined(__APPLE__)
   auto* daemon = new SignalDaemon(this);
@@ -527,6 +529,7 @@ void MainWindow::ConnectMenuBar()
   connect(m_menu_bar, &MenuBar::ShowFIFOPlayer, this, &MainWindow::ShowFIFOPlayer);
   connect(m_menu_bar, &MenuBar::ConnectWiiRemote, this, &MainWindow::OnConnectWiiRemote);
   connect(m_menu_bar, &MenuBar::ShowAchievementsWindow, this, &MainWindow::ShowAchievementsWindow);
+  connect(m_menu_bar, &MenuBar::ActivateRAMenuItem, this, &MainWindow::ActivateRAMenuItem);
 
   // Movie
   connect(m_menu_bar, &MenuBar::PlayRecording, this, &MainWindow::OnPlayRecording);
@@ -1849,6 +1852,11 @@ void MainWindow::ShowAchievementsWindow()
   m_achievements_window->show();
   m_achievements_window->raise();
   m_achievements_window->activateWindow();
+}
+
+void MainWindow::ActivateRAMenuItem(int id)
+{
+  Achievements::RAIntegration::ActivateMenuItem(id);
 }
 
 void MainWindow::ShowMemcardManager()

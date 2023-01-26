@@ -378,6 +378,7 @@ PRIVATE
   uicommon
   imgui
   implot
+	rcheevos
 )
 
 if (WIN32)
